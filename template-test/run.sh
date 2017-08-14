@@ -81,8 +81,8 @@ function testTemplates {
 			templateName="${line%% *}"
 			action="${line##* }"
 
-			mkdir -p "${tmpDir}/${templateName}"
-			pushd "${tmpDir}/${templateName}"
+			mkdir -p "${tmpDir}/${templateName}-template"
+			pushd "${tmpDir}/${templateName}-template"
 
 			cat <<- EOF
 			###################################
