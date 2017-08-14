@@ -77,36 +77,38 @@ function testTemplates {
 	local action
 
 	while read -r line ; do
-		templateName="${line%% *}"
-		action="${line##* }"
+		if [ -n "${line:-}" ] ; then
+			templateName="${line%% *}"
+			action="${line##* }"
 
-		mkdir -p "${tmpDir}/${templateName}"
-		pushd "${tmpDir}/${templateName}"
+			mkdir -p "${tmpDir}/${templateName}"
+			pushd "${tmpDir}/${templateName}"
 
-		cat <<- EOF
-		###################################
-			Testing ${templateName} template
-		###################################
-		EOF
-
-		if testTemplate "${templateName}" "${action}" ; then
 			cat <<- EOF
 			###################################
-			  RESULT ( ${templateName} ) : PASSED
+				Testing ${templateName} template
 			###################################
 			EOF
-			(( ++passed ))
-		else
-			cat <<- EOF
-			###################################
-			  RESULT ( ${templateName} ) : FAILED
-			###################################
-			EOF
-			(( ++failed ))
+
+			if testTemplate "${templateName}" "${action}" ; then
+				cat <<- EOF
+				###################################
+				  RESULT ( ${templateName} ) : PASSED
+				###################################
+				EOF
+				(( ++passed ))
+			else
+				cat <<- EOF
+				###################################
+				  RESULT ( ${templateName} ) : FAILED
+				###################################
+				EOF
+				(( ++failed ))
+			fi
+
+			popd
 		fi
-
-		popd
-	done < <( printf "%s" "$templates" )
+	done < <( printf "%s\n" "$templates" )
 }
 
 trap cleanupFunc EXIT
